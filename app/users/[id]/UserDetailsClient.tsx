@@ -1,8 +1,9 @@
 "use client";
 
+import { User } from "@/types/user";
 import { motion } from "framer-motion";
 
-export default function UserDetailsClient({ user }: { user: any }) {
+export default function UserDetailsClient({ user }: { user: User }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
