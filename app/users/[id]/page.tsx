@@ -3,22 +3,24 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import UserDetailsClient from "./UserDetailsClient";
 
-type Props = { params: { id: string } };
+// Do NOT type params as { id: string } directly
+export default async function UserDetails({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const resolvedParams = await params; // await the lazy-loaded params
+  const user = await fetchUser(resolvedParams.id).catch(() => null);
 
-export async function generateMetadata({ params }: Props) {
-  const user = await fetchUser(params.id).catch(() => null);
-  return { title: user ? `${user.name} | User` : "User | Not found" };
-}
-
-export default async function UserDetails({ params }: Props) {
-  const user = await fetchUser(params.id).catch(() => null);
-  if (!user) notFound();
+  if (!user) {
+    notFound();
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gray-50 p-6 sm:p-10 space-y-6">
       <Link
         href="/users"
-        className="inline-block text-sm text-indigo-700 hover:underline"
+        className="inline-block text-sm text-[#00b894] hover:underline"
       >
         ← Back to Users
       </Link>
