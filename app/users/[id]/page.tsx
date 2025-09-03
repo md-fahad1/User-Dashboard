@@ -2,14 +2,12 @@ import { fetchUser } from "@/lib/api";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import UserDetailsClient from "./UserDetailsClient";
-
-// Do NOT type params as { id: string } directly
 export default async function UserDetails({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const resolvedParams = await params; // await the lazy-loaded params
+  const resolvedParams = await params;
   const user = await fetchUser(resolvedParams.id).catch(() => null);
 
   if (!user) {

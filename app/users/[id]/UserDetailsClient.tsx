@@ -2,11 +2,9 @@
 
 import { User } from "@/types/user";
 import { motion } from "framer-motion";
-
 interface Props {
   user: User;
 }
-
 export default function UserDetailsClient({ user }: Props) {
   return (
     <motion.div
@@ -15,7 +13,6 @@ export default function UserDetailsClient({ user }: Props) {
       transition={{ duration: 0.4 }}
       className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12"
     >
-      {/* Profile Header */}
       <div className="relative bg-[#00b894]/20 rounded-3xl h-36 flex items-center justify-center shadow-md">
         <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 h-36 w-36 sm:h-40 sm:w-40 rounded-full bg-white flex items-center justify-center text-6xl font-bold text-[#00b894] shadow-2xl border-4 border-white">
           {user.name?.charAt(0).toUpperCase()}
@@ -87,7 +84,6 @@ export default function UserDetailsClient({ user }: Props) {
   );
 }
 
-// Info block
 function Info({ label, value }: { label: string; value?: string }) {
   return (
     <div className="flex flex-col">
@@ -97,7 +93,6 @@ function Info({ label, value }: { label: string; value?: string }) {
   );
 }
 
-// InfoCard wrapper
 function InfoCard({
   title,
   children,
