@@ -1,16 +1,17 @@
 "use client";
 
-import DashboardHeader from "../../components/UserDashboard/DashboardHeader/DashboardHeader";
-import SideNavbar from "../../components/UserDashboard/SideNavbar/SideNavbar";
+import AdminDashboardHeader from "@/components/UserDashboard/DashboardHeader/DashboardHeader";
+import DashboardHeader from "../../components/AdminDashboard/DashboardHeader/DashboardHeader";
+import AdminSideNavbar from "../../components/AdminDashboard/SideNavbar/AdminSideNavbar";
 
 export default function DashboardLayoutClient({ children }) {
   return (
     <div className="lg:grid lg:grid-cols-12 w-full">
       <section className="lg:col-span-2">
-        <SideNavbar />
+        <AdminSideNavbar />
       </section>
       <section className="lg:col-span-10">
-        <DashboardHeader />
+        <AdminDashboardHeader />
         <div className="my-4 md:my-3 md:px-3">{children}</div>
       </section>
     </div>

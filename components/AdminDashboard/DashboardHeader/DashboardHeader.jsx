@@ -1,18 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  FaSearch,
-  FaSun,
-  FaMoon,
-  FaBell,
-  FaEnvelope,
-  FaSignOutAlt,
-  FaCog,
-  FaUserCircle,
-} from "react-icons/fa";
+import { FaSearch, FaSun, FaMoon, FaBell, FaSignOutAlt } from "react-icons/fa";
 
-const AdminDashboardHeader = () => {
+const DashboardHeader = () => {
   const [isDark, setIsDark] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
@@ -32,7 +23,7 @@ const AdminDashboardHeader = () => {
         <FaSearch className="text-gray-500 dark:text-gray-400" />
         <input
           type="text"
-          placeholder="Search orders, users, products..."
+          placeholder="Search..."
           className="ml-3 bg-transparent focus:outline-none w-full text-gray-700 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400"
         />
       </div>
@@ -47,7 +38,7 @@ const AdminDashboardHeader = () => {
           {isDark ? (
             <FaSun className="text-yellow-400" />
           ) : (
-            <FaMoon className="text-gray-600 dark:text-gray-200" />
+            <FaMoon className="text-gray-600" />
           )}
         </button>
 
@@ -57,17 +48,7 @@ const AdminDashboardHeader = () => {
             <FaBell className="text-gray-700 dark:text-gray-200 text-lg" />
           </button>
           <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-500 rounded-full transform translate-x-1/2 -translate-y-1/2">
-            5
-          </span>
-        </div>
-
-        {/* Messages */}
-        <div className="relative">
-          <button className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-            <FaEnvelope className="text-gray-700 dark:text-gray-200 text-lg" />
-          </button>
-          <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-blue-500 rounded-full transform translate-x-1/2 -translate-y-1/2">
-            2
+            3
           </span>
         </div>
 
@@ -77,9 +58,13 @@ const AdminDashboardHeader = () => {
             onClick={() => setProfileOpen(!profileOpen)}
             className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
           >
-            <FaUserCircle className="text-3xl text-gray-700 dark:text-gray-200" />
+            <img
+              src="https://i.pravatar.cc/40"
+              alt="Profile"
+              className="w-9 h-9 rounded-full border-2 border-gray-300 dark:border-gray-600"
+            />
             <span className="hidden md:block text-gray-700 dark:text-gray-200 font-medium">
-              Admin
+              John Doe
             </span>
           </button>
 
@@ -87,18 +72,18 @@ const AdminDashboardHeader = () => {
             <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50">
               <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                 <p className="font-semibold text-gray-800 dark:text-gray-200">
-                  Admin Name
+                  John Doe
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  admin@example.com
+                  john@example.com
                 </p>
               </div>
               <ul className="py-1">
-                <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center gap-2">
-                  <FaUserCircle /> Profile
+                <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                  Profile
                 </li>
-                <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center gap-2">
-                  <FaCog /> Settings
+                <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                  Settings
                 </li>
                 <li className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center gap-2">
                   <FaSignOutAlt /> Logout
@@ -112,4 +97,4 @@ const AdminDashboardHeader = () => {
   );
 };
 
-export default AdminDashboardHeader;
+export default DashboardHeader;
