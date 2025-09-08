@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import TableHeader from "@/helper/TableHeader"; // Reusable header
 import ViewEditDelete from "@/helper/ViewEditDelete"; // Reusable actions
-
+import Pagination from "@/helper/pagination";
 /* ---------------- Sample Product Data ---------------- */
+
 const products = [
   {
     id: "PRD001",
@@ -46,6 +47,30 @@ const products = [
     stock: "Low Stock",
     image: "https://via.placeholder.com/60",
   },
+  {
+    id: "PRD006",
+    name: "Bluetooth Speaker",
+    category: "Accessories",
+    price: "$49",
+    stock: "In Stock",
+    image: "https://via.placeholder.com/60",
+  },
+  {
+    id: "PRD007",
+    name: "DSLR Camera",
+    category: "Electronics",
+    price: "$799",
+    stock: "Out of Stock",
+    image: "https://via.placeholder.com/60",
+  },
+  {
+    id: "PRD008",
+    name: "Gaming Mouse",
+    category: "Computers",
+    price: "$59",
+    stock: "In Stock",
+    image: "https://via.placeholder.com/60",
+  },
 ];
 
 /* ---------------- Tabs for Products ---------------- */
@@ -69,10 +94,29 @@ const getStockColor = (stock) => {
       return "bg-gray-100 text-gray-800";
   }
 };
-
+const ITEMS_PER_PAGE = 5;
 /* ---------------- Product Page ---------------- */
 const ProductPage = () => {
   const [activeTab, setActiveTab] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filter products by tab
+  const filteredProducts = products.filter((product) => {
+    const matchesTab = activeTab === "All" || product.stock === activeTab;
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.category.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesTab && matchesSearch;
+  });
+
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+
+  // Pagination slice
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
@@ -162,6 +206,13 @@ const ProductPage = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="mt-4">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
     </div>
   );

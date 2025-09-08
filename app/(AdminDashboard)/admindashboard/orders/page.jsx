@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import TableHeader from "@/helper/TableHeader"; // <-- import reusable header
 import ViewEditDelete from "@/helper/ViewEditDelete";
+import Pagination from "@/helper/pagination";
 
 const orders = [
   {
@@ -150,8 +151,39 @@ const tabs = [
   { label: "Failed", count: 42 },
 ];
 
+const ITEMS_PER_PAGE = 5; // Show 5 items per page
+
 const OrderPage = () => {
   const [activeTab, setActiveTab] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Map tabs to actual order statuses
+  const tabStatusMap = {
+    All: null,
+    "Pending Payment": "Pending",
+    Incomplete: "Incomplete",
+    Completed: "Completed",
+    Refunded: "Refunded",
+    Failed: "Failed",
+  };
+
+  // Filter orders by tab
+  const filteredOrders = orders.filter(
+    (order) =>
+      (!tabStatusMap[activeTab] || order.status === tabStatusMap[activeTab]) &&
+      (order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.id.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
+
+  // Slice orders for pagination
+  const paginatedOrders = filteredOrders.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -161,6 +193,10 @@ const OrderPage = () => {
         return "bg-green-100 text-green-800";
       case "Cancelled":
         return "bg-red-100 text-red-800";
+      case "Refunded":
+        return "bg-purple-100 text-purple-800";
+      case "Failed":
+        return "bg-gray-100 text-gray-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -168,14 +204,19 @@ const OrderPage = () => {
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
-      {/* Reusable Table Header */}
       <TableHeader
         title="Orders"
         subtitle="Manage all orders from your customers"
         tabs={tabs}
         activeTab={activeTab}
-        onTabChange={(tab) => setActiveTab(tab)}
-        onSearch={(val) => console.log("Search:", val)}
+        onTabChange={(tab) => {
+          setActiveTab(tab);
+          setCurrentPage(1); // reset page
+        }}
+        onSearch={(val) => {
+          setSearchTerm(val);
+          setCurrentPage(1);
+        }}
         onAdd={() => console.log("Add Order")}
         onExport={() => console.log("Export Orders")}
         onSettings={() => console.log("Settings Clicked")}
@@ -196,7 +237,7 @@ const OrderPage = () => {
       />
 
       {/* Orders Table */}
-      <div className="bg-white shadow-lg rounded-md overflow-hidden">
+      <div className="bg-white shadow-lg rounded-md overflow-hidden mt-4">
         <table className="min-w-full">
           <thead className="bg-gray-50 border-b">
             <tr>
@@ -224,7 +265,7 @@ const OrderPage = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {orders.map((order) => (
+            {paginatedOrders.map((order) => (
               <tr
                 key={order.id}
                 className="hover:bg-gray-50 transition-colors duration-200"
@@ -267,6 +308,15 @@ const OrderPage = () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-4">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
     </div>
   );
