@@ -11,9 +11,9 @@ const AdminNavItem = ({ icon: Icon, label, to, badge }) => {
   return (
     <Link
       href={to}
-      className={`flex items-center justify-between gap-3 px-4 py-2 rounded-md transition-all duration-200 ${
+      className={`flex items-center justify-between gap-3 px-4 py-2 rounded-sm transition-all duration-200 ${
         isActive
-          ? "bg-blue-600 text-white font-semibold"
+          ? "bg-blue-50 text-blue-500 font-semibold border border-l-8 border-l-blue-500"
           : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
       }`}
     >

@@ -60,7 +60,7 @@ const AdminSideNavbar = () => {
           Admin Dashboard
         </h2>
       </div>
-      <nav className="flex flex-col gap-1 p-4 flex-1 overflow-y-auto">
+      <nav className="flex flex-col gap-1 px-1 py-4 flex-1 overflow-y-auto">
         {navItems.map((item, index) => (
           <AdminNavItem
             key={index}
@@ -72,7 +72,7 @@ const AdminSideNavbar = () => {
         ))}
       </nav>
       <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
-        &copy; {new Date().getFullYear()} Dream Of Company
+        &copy; {new Date().getFullYear()} Fahad
       </div>
     </aside>
   );

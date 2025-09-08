@@ -1,142 +1,157 @@
 "use client";
-
 import React, { useState } from "react";
-import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import TableHeader from "@/helper/TableHeader"; // reusable header
+import ViewEditDelete from "@/helper/ViewEditDelete";
+
+const categoriesData = [
+  {
+    id: 1,
+    name: "Electronics",
+    status: "Active",
+    image: "https://via.placeholder.com/100",
+  },
+  {
+    id: 2,
+    name: "Fashion",
+    status: "Active",
+    image: "https://via.placeholder.com/100",
+  },
+  {
+    id: 3,
+    name: "Home Appliances",
+    status: "Inactive",
+    image: "https://via.placeholder.com/100",
+  },
+  {
+    id: 4,
+    name: "Books",
+    status: "Active",
+    image: "https://via.placeholder.com/100",
+  },
+];
+
+const tabs = [
+  { label: "All", count: 4 },
+  { label: "Active", count: 3 },
+  { label: "Inactive", count: 1 },
+];
+
+const getStatusColor = (status) => {
+  return status === "Active"
+    ? "bg-green-100 text-green-800"
+    : "bg-gray-100 text-gray-700";
+};
 
 const CategoryPage = () => {
-  // Sample categories
-  const [categories, setCategories] = useState([
-    {
-      id: 1,
-      name: "Electronics",
-      image: "https://via.placeholder.com/100",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Fashion",
-      image: "https://via.placeholder.com/100",
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Home Appliances",
-      image: "https://via.placeholder.com/100",
-      status: "Inactive",
-    },
-    {
-      id: 4,
-      name: "Books",
-      image: "https://via.placeholder.com/100",
-      status: "Active",
-    },
-  ]);
+  const [activeTab, setActiveTab] = useState("All");
+
+  const filteredCategories =
+    activeTab === "All"
+      ? categoriesData
+      : categoriesData.filter((cat) => cat.status === activeTab);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Categories</h1>
-          <p className="text-gray-600">Manage all product categories</p>
-        </div>
-        <button className="flex items-center gap-2 bg-[#38ada9] hover:bg-[#78e08f] text-white px-4 py-2 rounded-lg shadow-md transition-all">
-          <FaPlus /> Add Category
-        </button>
-      </div>
+    <div className="min-h-screen p-6 bg-gray-100">
+      {/* Reusable Table Header */}
+      <TableHeader
+        title="Categories"
+        subtitle="Manage all product categories"
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={(tab) => setActiveTab(tab)}
+        onSearch={(val) => console.log("Search:", val)}
+        onAdd={() => console.log("Add Category")}
+        onExport={() => console.log("Export Categories")}
+        onSettings={() => console.log("Settings Clicked")}
+      />
 
       {/* Category Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {categories.map((category) => (
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        {filteredCategories.map((category) => (
           <div
             key={category.id}
-            className="bg-white shadow-lg rounded-xl p-5 flex flex-col items-center justify-center transition-transform hover:-translate-y-1"
+            className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center text-center hover:shadow-2xl transition-shadow duration-300"
           >
-            <img
-              src={category.image}
-              alt={category.name}
-              className="w-24 h-24 rounded-full mb-3 object-cover"
-            />
+            <div className="w-24 h-24 mb-4 rounded-full overflow-hidden border-4 border-green-200">
+              <img
+                src={category.image}
+                alt={category.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
             <h2 className="text-xl font-semibold text-gray-800">
               {category.name}
             </h2>
             <span
-              className={`mt-2 px-3 py-1 rounded-full text-sm font-medium ${
-                category.status === "Active"
-                  ? "bg-[#78e08f] text-white"
-                  : "bg-gray-300 text-gray-700"
-              }`}
+              className={`mt-2 px-4 py-1 rounded-full text-sm font-semibold w-28 text-center ${getStatusColor(
+                category.status
+              )}`}
             >
               {category.status}
             </span>
-            <div className="flex gap-3 mt-4">
-              <button className="text-blue-500 hover:text-blue-700">
-                <FaEdit />
-              </button>
-              <button className="text-red-500 hover:text-red-700">
-                <FaTrash />
-              </button>
+            <div className="flex gap-4 mt-5">
+              <ViewEditDelete
+                onView={() => console.log("View category")}
+                onEdit={() => console.log("Edit category")}
+                onDelete={() => console.log("Delete category")}
+              />
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Categories Table */}
-      <div className="bg-white shadow-lg rounded-xl p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-          All Categories
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-[#0a3d62] text-white">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium">
-                  Category
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-center text-sm font-medium">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {categories.map((category) => (
-                <tr
-                  key={category.id}
-                  className="hover:bg-gray-50 transition-colors"
-                >
-                  <td className="px-6 py-4 text-gray-800 font-medium flex items-center gap-3">
-                    <img
-                      src={category.image}
-                      alt={category.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
+      <div className="bg-white shadow-lg rounded-md overflow-hidden">
+        <table className="min-w-full">
+          <thead className="bg-gray-50 border-b">
+            <tr>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
+                Category
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
+                Status
+              </th>
+              <th className="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {filteredCategories.map((category) => (
+              <tr
+                key={category.id}
+                className="hover:bg-gray-50 transition-colors duration-200"
+              >
+                <td className="px-6 py-4 flex items-center gap-3">
+                  <img
+                    src={category.image}
+                    alt={category.name}
+                    className="w-10 h-10 rounded-md object-cover border"
+                  />
+                  <span className="text-gray-800 font-medium">
                     {category.name}
-                  </td>
-                  <td
-                    className={`px-6 py-4 font-semibold ${
-                      category.status === "Active"
-                        ? "text-[#38ada9]"
-                        : "text-gray-500"
-                    }`}
+                  </span>
+                </td>
+                <td className="px-6 py-4">
+                  <span
+                    className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-semibold w-28 text-center ${getStatusColor(
+                      category.status
+                    )}`}
                   >
                     {category.status}
-                  </td>
-                  <td className="px-6 py-4 text-center flex justify-center gap-3">
-                    <button className="text-blue-500 hover:text-blue-700">
-                      <FaEdit />
-                    </button>
-                    <button className="text-red-500 hover:text-red-700">
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-center">
+                  <ViewEditDelete
+                    onView={() => console.log("View category")}
+                    onEdit={() => console.log("Edit category")}
+                    onDelete={() => console.log("Delete category")}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

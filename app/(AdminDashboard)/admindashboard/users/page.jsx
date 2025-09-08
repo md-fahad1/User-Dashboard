@@ -1,149 +1,221 @@
 "use client";
 
 import React, { useState } from "react";
-import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
+import { FaUsers, FaUserCheck, FaUserTimes, FaUserClock } from "react-icons/fa";
+import ViewEditDelete from "@/helper/ViewEditDelete";
+import TableHeader from "@/helper/TableHeader";
+
+const usersData = [
+  {
+    id: 1,
+    name: "John Doe",
+    email: "john@example.com",
+    status: "Active",
+    image: "https://i.pravatar.cc/40?img=1",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    email: "jane@example.com",
+    status: "Inactive",
+    image: "https://i.pravatar.cc/40?img=2",
+  },
+  {
+    id: 3,
+    name: "Mike Johnson",
+    email: "mike@example.com",
+    status: "Active",
+    image: "https://i.pravatar.cc/40?img=3",
+  },
+  {
+    id: 4,
+    name: "Sara Wilson",
+    email: "sara@example.com",
+    status: "Pending",
+    image: "https://i.pravatar.cc/40?img=4",
+  },
+  {
+    id: 5,
+    name: "Tom Hanks",
+    email: "tom@example.com",
+    status: "Active",
+    image: "https://i.pravatar.cc/40?img=5",
+  },
+];
+
+const tabs = [
+  { label: "All", count: usersData.length },
+  {
+    label: "Active",
+    count: usersData.filter((u) => u.status === "Active").length,
+  },
+  {
+    label: "Inactive",
+    count: usersData.filter((u) => u.status === "Inactive").length,
+  },
+  {
+    label: "Pending",
+    count: usersData.filter((u) => u.status === "Pending").length,
+  },
+];
+
+const stats = [
+  {
+    title: "Total Users",
+    value: usersData.length,
+    icon: FaUsers,
+    color: "bg-blue-100 text-blue-800",
+    iconBg: "bg-blue-100",
+  },
+  {
+    title: "Active Users",
+    value: usersData.filter((u) => u.status === "Active").length,
+    icon: FaUserCheck,
+    color: "bg-green-100 text-green-800",
+    iconBg: "bg-green-100",
+  },
+  {
+    title: "Inactive Users",
+    value: usersData.filter((u) => u.status === "Inactive").length,
+    icon: FaUserTimes,
+    color: "bg-red-100 text-red-800",
+    iconBg: "bg-red-100",
+  },
+  {
+    title: "Pending Users",
+    value: usersData.filter((u) => u.status === "Pending").length,
+    icon: FaUserClock,
+    color: "bg-yellow-100 text-yellow-800",
+    iconBg: "bg-yellow-100",
+  },
+];
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case "Active":
+      return "bg-green-100 text-green-800";
+    case "Inactive":
+      return "bg-red-100 text-red-800";
+    case "Pending":
+      return "bg-yellow-100 text-yellow-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
 
 const UserPage = () => {
+  const [activeTab, setActiveTab] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const users = [
-    { id: 1, name: "John Doe", email: "john@example.com", status: "Active" },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      status: "Inactive",
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      email: "mike@example.com",
-      status: "Active",
-    },
-    {
-      id: 4,
-      name: "Sara Wilson",
-      email: "sara@example.com",
-      status: "Pending",
-    },
-    { id: 5, name: "Tom Hanks", email: "tom@example.com", status: "Active" },
-  ];
-
-  const stats = [
-    { title: "Total Users", value: users.length, color: "bg-[#38ada9]" },
-    {
-      title: "Active Users",
-      value: users.filter((u) => u.status === "Active").length,
-      color: "bg-[#78e08f]",
-    },
-    {
-      title: "Inactive Users",
-      value: users.filter((u) => u.status === "Inactive").length,
-      color: "bg-[#f78fb3]",
-    },
-    {
-      title: "Pending Users",
-      value: users.filter((u) => u.status === "Pending").length,
-      color: "bg-[#0a3d62]",
-    },
-  ];
-
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers = usersData
+    .filter((user) => activeTab === "All" || user.status === activeTab)
+    .filter(
+      (user) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Users</h1>
-        <p className="text-gray-600">Manage all users</p>
-      </div>
+    <div className="min-h-screen p-6 bg-gray-100">
+      {/* Reusable Table Header */}
+      <TableHeader
+        title="Users"
+        subtitle="Manage all users in your system"
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={(tab) => setActiveTab(tab)}
+        onSearch={(val) => setSearchTerm(val)}
+        onAdd={() => console.log("Add User")}
+        onExport={() => console.log("Export Users")}
+        onSettings={() => console.log("Settings Clicked")}
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map((stat) => (
-          <div
-            key={stat.title}
-            className={`${stat.color} text-white shadow-lg rounded-lg p-5 flex flex-col items-center justify-center`}
-          >
-            <h2 className="text-xl font-semibold">{stat.title}</h2>
-            <p className="mt-2 text-2xl font-bold">{stat.value}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Search */}
-      <div className="mb-4 flex justify-end">
-        <div className="flex items-center bg-white rounded-full shadow px-4 py-2 w-full max-w-xs">
-          <FaSearch className="text-gray-400 mr-2" />
-          <input
-            type="text"
-            placeholder="Search users..."
-            className="w-full outline-none text-gray-700"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+        {stats.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <div
+              key={stat.title}
+              className={`flex items-center justify-between p-5 rounded-xl shadow-lg hover:shadow-2xl transition-shadow bg-white`}
+            >
+              <div>
+                <h2 className="text-gray-500 text-sm font-medium">
+                  {stat.title}
+                </h2>
+                <p className="mt-2 text-2xl font-bold text-gray-900">
+                  {stat.value}
+                </p>
+              </div>
+              <div className={`p-3 rounded-full ${stat.iconBg}`}>
+                <Icon className={`text-xl ${stat.color}`} />
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Users Table */}
-      <div className="bg-white shadow-lg rounded-xl p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">User List</h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-[#0a3d62] text-white">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-center text-sm font-medium">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {filteredUsers.map((user) => (
-                <tr
-                  key={user.id}
-                  className="hover:bg-gray-50 transition-colors"
-                >
-                  <td className="px-6 py-4 text-gray-800 font-medium">
-                    {user.name}
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">{user.email}</td>
-                  <td
-                    className={`px-6 py-4 font-semibold ${
-                      user.status === "Active"
-                        ? "text-[#38ada9]"
-                        : user.status === "Inactive"
-                        ? "text-[#f78fb3]"
-                        : "text-[#0a3d62]"
-                    }`}
+      <div className="bg-white shadow-lg rounded-xl p-6 overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50 border-b">
+            <tr>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
+                User
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
+                Email
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
+                Status
+              </th>
+              <th className="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {filteredUsers.map((user) => (
+              <tr
+                key={user.id}
+                className="hover:bg-gray-50 transition-colors duration-200"
+              >
+                <td className="px-6 py-4 flex items-center gap-3">
+                  <img
+                    src={user.image}
+                    alt={user.name}
+                    className="w-10 h-10 rounded-full object-cover border"
+                  />
+                  <span className="text-gray-800 font-medium">{user.name}</span>
+                </td>
+                <td className="px-6 py-4 text-gray-700">{user.email}</td>
+                <td className="px-6 py-4">
+                  <span
+                    className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-semibold w-28 text-center ${getStatusColor(
+                      user.status
+                    )}`}
                   >
                     {user.status}
-                  </td>
-                  <td className="px-6 py-4 text-center flex justify-center gap-3">
-                    <button className="text-blue-500 hover:text-blue-700">
-                      <FaEdit />
-                    </button>
-                    <button className="text-red-500 hover:text-red-700">
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-center">
+                  <ViewEditDelete
+                    onView={() => console.log("View User")}
+                    onEdit={() => console.log("Edit User")}
+                    onDelete={() => console.log("Delete User")}
+                  />
+                </td>
+              </tr>
+            ))}
+            {filteredUsers.length === 0 && (
+              <tr>
+                <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
+                  No users found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
