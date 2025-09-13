@@ -1,64 +1,10 @@
 "use client";
-
+import { getStatusColor } from "@/utils/userStatusColors";
 import React, { useState } from "react";
 import { FaUsers, FaUserCheck, FaUserTimes, FaUserClock } from "react-icons/fa";
 import ViewEditDelete from "@/helper/ViewEditDelete";
 import TableHeader from "@/helper/TableHeader";
-
-const usersData = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john@example.com",
-    status: "Active",
-    image: "https://i.pravatar.cc/40?img=1",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane@example.com",
-    status: "Inactive",
-    image: "https://i.pravatar.cc/40?img=2",
-  },
-  {
-    id: 3,
-    name: "Mike Johnson",
-    email: "mike@example.com",
-    status: "Active",
-    image: "https://i.pravatar.cc/40?img=3",
-  },
-  {
-    id: 4,
-    name: "Sara Wilson",
-    email: "sara@example.com",
-    status: "Pending",
-    image: "https://i.pravatar.cc/40?img=4",
-  },
-  {
-    id: 5,
-    name: "Tom Hanks",
-    email: "tom@example.com",
-    status: "Active",
-    image: "https://i.pravatar.cc/40?img=5",
-  },
-];
-
-const tabs = [
-  { label: "All", count: usersData.length },
-  {
-    label: "Active",
-    count: usersData.filter((u) => u.status === "Active").length,
-  },
-  {
-    label: "Inactive",
-    count: usersData.filter((u) => u.status === "Inactive").length,
-  },
-  {
-    label: "Pending",
-    count: usersData.filter((u) => u.status === "Pending").length,
-  },
-];
-
+import { usersData, tabs } from "@/lib/data/userData";
 const stats = [
   {
     title: "Total Users",
@@ -90,18 +36,7 @@ const stats = [
   },
 ];
 
-const getStatusColor = (status) => {
-  switch (status) {
-    case "Active":
-      return "bg-green-100 text-green-800";
-    case "Inactive":
-      return "bg-red-100 text-red-800";
-    case "Pending":
-      return "bg-yellow-100 text-yellow-800";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
+
 
 const UserPage = () => {
   const [activeTab, setActiveTab] = useState("All");
@@ -160,16 +95,16 @@ const UserPage = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50 border-b">
             <tr>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
+              <th className="table-header">
                 User
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
+              <th className="table-header">
                 Email
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
+              <th className="table-header">
                 Status
               </th>
-              <th className="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase">
+              <th className="table-header">
                 Actions
               </th>
             </tr>

@@ -1,14 +1,13 @@
 "use client";
 import { AiOutlineWarning, AiFillWarning } from "react-icons/ai";
 import React from "react";
+import { orders } from "@/lib/data/orderData";
+import { products } from "@/lib/data/productData";
+import { getStockColor } from "@/utils/stockColors";
 import {
   FaUsers,
   FaShoppingCart,
   FaDollarSign,
-  FaBoxOpen,
-  FaEdit,
-  FaTrash,
-  FaBell,
   FaCreditCard,
   FaArrowUp,
   FaArrowDown,
@@ -27,6 +26,8 @@ import { Line } from "react-chartjs-2";
 import { PointElement, LineElement, Filler } from "chart.js";
 
 import { Bar, Doughnut } from "react-chartjs-2";
+import DataTable from "@/helper/DataTable";
+import { getStatusColor } from "@/utils/statusColors";
 
 ChartJS.register(
   CategoryScale,
@@ -159,12 +160,12 @@ const AdminDashboard = () => {
       {
         label: "Weekly Sales",
         data: [2000, 2500, 1700, 2800, 4500, 3000, 2400, 5500],
-        borderColor: "#10b981", // green line
-        backgroundColor: "rgba(16,185,129,0.2)", // soft green fill
+        borderColor: "#10b981",
+        backgroundColor: "rgba(16,185,129,0.2)",
         fill: true,
-        tension: 0.4, // smooth curve
+        tension: 0.4,
         borderWidth: 1,
-        pointRadius: 0, // hide points
+        pointRadius: 0,
       },
     ],
   };
@@ -181,13 +182,12 @@ const AdminDashboard = () => {
     },
   };
 
-  // Bar Chart Data
   const barData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
         label: "Orders",
-        data: [30, 45, 60, 50, 75, 90], // example values
+        data: [30, 45, 60, 50, 75, 90],
         backgroundColor: "#0a3d62",
         borderRadius: 6,
         barThickness: 30,
@@ -195,40 +195,88 @@ const AdminDashboard = () => {
     ],
   };
 
-  // Doughnut Chart Data
-  const doughnutData = {
-    labels: ["Active", "Inactive"],
-    datasets: [
-      {
-        data: [1200, 200],
-        backgroundColor: ["#38ada9", "#f78fb3"],
-        hoverOffset: 10,
-      },
-    ],
+  const product_columns = [
+    { key: "image", label: "Image", align: "left" },
+    { key: "name", label: "Name", align: "left" },
+    { key: "category", label: "Category", align: "left" },
+    { key: "price", label: "Price", align: "left" },
+    { key: "stock", label: "Stock", align: "center" },
+  ];
+  const columns = [
+    { key: "customer", label: "Customer", align: "left" },
+    { key: "email", label: "Email", align: "left" },
+    { key: "total", label: "Total", align: "left" },
+    { key: "date", label: "Date", align: "left" },
+    { key: "status", label: "Status", align: "center" },
+  ];
+  const Product_renderCell = (row, key) => {
+    switch (key) {
+      case "image":
+        return (
+          <img
+            src={row.image}
+            alt={row.name}
+            className="w-12 h-12 rounded-lg object-cover"
+          />
+        );
+      case "stock":
+        return (
+          <span
+            className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-semibold w-28 text-center ${
+              getStockColor?.(row.stock) || "bg-gray-100 text-gray-800"
+            }`}
+          >
+            {row.stock}
+          </span>
+        );
+      case "actions":
+        return (
+          <ViewEditDelete
+            onView={() => console.log("View product", row.id)}
+            onEdit={() => console.log("Edit product", row.id)}
+            onDelete={() => console.log("Delete product", row.id)}
+          />
+        );
+      default:
+        return row[key];
+    }
   };
 
-  // Dummy Orders
-  const latestOrders = [
-    { id: "#OD001", customer: "John Doe", total: "$120", status: "Delivered" },
-    { id: "#OD002", customer: "Jane Smith", total: "$250", status: "Pending" },
-    {
-      id: "#OD003",
-      customer: "Mike Johnson",
-      total: "$75",
-      status: "Cancelled",
-    },
-    {
-      id: "#OD004",
-      customer: "Sara Wilson",
-      total: "$320",
-      status: "Delivered",
-    },
-  ];
+  const renderCell = (row, key) => {
+    switch (key) {
+      case "customer":
+        return (
+          <div className="flex items-center gap-3">
+            <img
+              src={row.image}
+              alt={row.customer}
+              className="w-10 h-10 rounded-full object-cover border"
+            />
+            <span className="text-gray-800 font-medium">{row.customer}</span>
+          </div>
+        );
+      case "status":
+        return (
+          <span
+            className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-semibold w-28 text-center ${getStatusColor(
+              row.status
+            )}`}
+          >
+            {row.status}
+          </span>
+        );
+
+      default:
+        return row[key];
+    }
+  };
+  const oders_five = orders.slice(0, 5);
+  const products_five = products.slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 p-3">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-3">
         <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
         <p className="text-gray-600">Welcome back, Admin!</p>
       </div>
@@ -370,71 +418,13 @@ const AdminDashboard = () => {
 
       <div className="bg-white shadow-md rounded-xl p-6 mb-8">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Recent Users
+          Recent Products
         </h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {[
-                {
-                  name: "John Doe",
-                  email: "john@example.com",
-                  status: "Active",
-                },
-                {
-                  name: "Jane Smith",
-                  email: "jane@example.com",
-                  status: "Inactive",
-                },
-                {
-                  name: "Mike Johnson",
-                  email: "mike@example.com",
-                  status: "Active",
-                },
-              ].map((user, idx) => (
-                <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 text-gray-700 font-medium">
-                    {user.name}
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">{user.email}</td>
-                  <td
-                    className={`px-6 py-4 font-semibold ${
-                      user.status === "Active"
-                        ? "text-[#38ada9]"
-                        : "text-[#f78fb3]"
-                    }`}
-                  >
-                    {user.status}
-                  </td>
-                  <td className="px-6 py-4 text-center flex justify-center gap-3">
-                    <button className="text-blue-500 hover:text-blue-700">
-                      <FaEdit />
-                    </button>
-                    <button className="text-red-500 hover:text-red-700">
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          columns={product_columns}
+          data={products_five}
+          renderCell={Product_renderCell}
+        />
       </div>
 
       {/* Latest Orders */}
@@ -442,48 +432,7 @@ const AdminDashboard = () => {
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
           Latest Orders
         </h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
-                  Order ID
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
-                  Customer
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
-                  Total
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {latestOrders.map((order, idx) => (
-                <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 text-gray-700 font-medium">
-                    {order.id}
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">{order.customer}</td>
-                  <td className="px-6 py-4 text-gray-700">{order.total}</td>
-                  <td
-                    className={`px-6 py-4 font-semibold ${
-                      order.status === "Delivered"
-                        ? "text-[#38ada9]"
-                        : order.status === "Pending"
-                        ? "text-yellow-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {order.status}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable columns={columns} data={oders_five} renderCell={renderCell} />
       </div>
     </div>
   );
